@@ -24,6 +24,7 @@ gyazoserverの設定
     $ git clone git@github.com:KAKKA/GyazoServer.git gyazoserver
     
 gyazoserver/gyazo.rbの最終行を自分のサーバーのドメインに設定しておく。
+
     L34     "http://hoge.com/#{hash}.png"
     
 nginxの設定
@@ -57,8 +58,8 @@ nginxの設定
         # nginxのサーバーバージョンを返さない設定
         server_tokens    off;
 
-    # logformatにLTSVをセット
-    log_format  ltsv  'time:$time_local\t'
+        # logformatにLTSVをセット
+        log_format  ltsv  'time:$time_local\t'
                       'msec:$msec\t'
                       'host:$remote_addr\t'
                       'forwardedfor:$http_x_forwarded_for\t'
@@ -75,23 +76,21 @@ nginxの設定
                       'runtime:$upstream_http_x_runtime\t'
                       'vhost:$host';
 
-    sendfile        on;
+        sendfile        on;
 
-    sendfile        on;
+        # keepaliveを60秒に
+        keepalive_timeout  60;
 
-    # keepaliveを60秒に
-    keepalive_timeout  60;
+        # gzipを有効
+        gzip  on;
 
-    # gzipを有効
-    gzip  on;
+        # proxy cacheを有効に
+        # key 32MB/max 300MB/最大有効期限7日
+        proxy_cache_path /var/cache/nginx/cache levels=1:2 keys_zone=my-key:32m max_size=300m inactive=7d;
+        proxy_temp_path /var/cache/nginx/tmp;
 
-    # proxy cacheを有効に
-    # key 32MB/max 300MB/最大有効期限7日
-    proxy_cache_path /var/cache/nginx/cache levels=1:2 keys_zone=my-key:32m max_size=300m inactive=7d;
-    proxy_temp_path /var/cache/nginx/tmp;
-
-    # conf.d配下を読み込むようにセット
-    include /etc/nginx/conf.d/*.conf;
+        # conf.d配下を読み込むようにセット
+        include /etc/nginx/conf.d/*.conf;
     }
     
     # nginxへgyazoサーバーの設定
