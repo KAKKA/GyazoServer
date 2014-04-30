@@ -27,6 +27,9 @@ gyazoserver/gyazo.rbの最終行を自分のサーバーのドメインに設定
 
     L34     "http://hoge.com/#{hash}.png"
     
+    $ cd /opt/gyazoserver 
+    $ rackup -p 8000 &
+    
 nginxの設定
 
     # nginxのリポジトリを追加
